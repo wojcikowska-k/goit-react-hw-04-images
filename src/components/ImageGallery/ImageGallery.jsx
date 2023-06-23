@@ -8,7 +8,7 @@ const ImageGallery = ({ images }) => {
         const { id, largeImageURL, webformatURL, tags } = image;
         return (
           <ImageGalleryItem
-            id={id}
+            key={id}
             largeImageURL={largeImageURL}
             webformatURL={webformatURL}
             tags={tags}

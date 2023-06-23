@@ -8,7 +8,7 @@ import SearchBar from './Searchbar/Searchbar';
 const API_URL = 'https://pixabay.com/api/?';
 const API_KEY = '35750210-01538b5c80567ccad47fd3a82';
 
-const fetchImagessWithQuery = async searchValue => {
+const fetchImagesWithQuery = async searchValue => {
   const respone = await axios.get(API_URL, {
     params: {
       key: API_KEY,
@@ -34,21 +34,23 @@ export class App extends Component {
   };
 
   //checking if any data has changed
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.searchValue !== this.props.searchValue) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  // shouldComponentUpdate(nextProps) {
+  //   if (nextProps.searchValue !== this.props.searchValue) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   //putting new results into state
-  async componentDidUpdate() {
-    const { searchValue } = this.props;
+  async componentDidUpdate(prevProps, prevState) {
+    const { searchValue } = this.state;
+
+    if (searchValue === prevState.searchValue) return;
 
     try {
       this.setState({ isLoading: true });
-      const images = await fetchImagessWithQuery(searchValue);
+      const images = await fetchImagesWithQuery(searchValue);
       this.setState({ images });
     } catch (error) {
       this.setState({ error });
@@ -59,7 +61,7 @@ export class App extends Component {
 
   valueFromSubmit = e => {
     this.setState({ searchValue: e });
-    console.log('event from submit:', e);
+    // console.log('event from submit:', e);
   };
 
   render() {
