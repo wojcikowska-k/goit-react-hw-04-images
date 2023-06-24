@@ -1,7 +1,7 @@
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 
 //creating gallery out of results, using component of one item
-const ImageGallery = ({ images }) => {
+const ImageGallery = ({ images, openModal }) => {
   return (
     <ul className="ImageGallery">
       {images.map(image => {
@@ -12,6 +12,7 @@ const ImageGallery = ({ images }) => {
             largeImageURL={largeImageURL}
             webformatURL={webformatURL}
             tags={tags}
+            openModal={openModal}
           />
         );
       })}

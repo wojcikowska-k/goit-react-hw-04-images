@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { Component } from 'react';
-import { Loader } from 'components/Loader/Loader';
+import Loader from 'components/Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import SearchBar from './Searchbar/Searchbar';
 import Button from './Button/Button';
+import Modal from './Modal/Modal';
 
 //get all data from API
 const API_URL = 'https://pixabay.com/api/?';
@@ -31,6 +32,7 @@ export class App extends Component {
     error: null,
     searchValue: '',
     page: 1,
+    isOpen: false,
   };
 
   //putting starting values from submit
@@ -51,7 +53,6 @@ export class App extends Component {
       this.setState(prevState => ({
         images: [...prevState.images, ...images],
       }));
-      // console.log(this.state);
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -63,8 +64,12 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
+  openModal = e => {
+    this.setState({ isOpen: true });
+  };
+
   render() {
-    const { images, error, isLoading } = this.state;
+    const { images, error, isLoading, isOpen } = this.state;
 
     if (error) {
       return <div>Error - something went wrong</div>;
@@ -73,9 +78,12 @@ export class App extends Component {
     return (
       <div>
         <SearchBar onSubmit={this.valueFromSubmit} />
-        <ImageGallery images={images} />
+        <ImageGallery images={images} openModal={this.openModal} />
         {isLoading && <Loader />}
         <Button incrementPageNumber={this.incrementPageNumber} />
+        {isOpen && (
+          <Modal largeImageURL={images.largeImageURL} tags={images.tags} />
+        )}
       </div>
     );
   }

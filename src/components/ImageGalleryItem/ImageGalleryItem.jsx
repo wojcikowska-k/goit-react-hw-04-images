@@ -1,7 +1,8 @@
 const ImageGalleryItem = props => {
-  const { id, largeImageURL, webformatURL, tags } = props;
+  const { id, largeImageURL, webformatURL, tags, openModal } = props;
+
   return (
-    <li className="ImageGalleryItem" key={id}>
+    <li className="ImageGalleryItem" key={id} onClick={openModal}>
       <a href={largeImageURL}>
         <img
           className="ImageGalleryItem-image"
