@@ -6,7 +6,7 @@ const ImageGalleryItem = props => {
       <li
         className="ImageGalleryItem"
         key={id}
-        onClick={openModal(largeImageURL)}
+        onClick={() => openModal(largeImageURL)}
       >
         <img
           className="ImageGalleryItem-image"
