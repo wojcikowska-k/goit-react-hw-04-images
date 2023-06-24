@@ -1,17 +1,21 @@
+import Modal from '../Modal/Modal';
+
 const ImageGalleryItem = props => {
-  const { id, largeImageURL, webformatURL, tags, openModal } = props;
+  const { id, largeImageURL, webformatURL, tags, openModal, isOpen } = props;
 
   return (
-    <li className="ImageGalleryItem" key={id} onClick={openModal}>
-      <a href={largeImageURL}>
+    <div>
+      <li className="ImageGalleryItem" key={id} onClick={openModal}>
         <img
           className="ImageGalleryItem-image"
           src={webformatURL}
           alt={tags}
           loading="lazy"
         />
-      </a>
-    </li>
+      </li>
+
+      {isOpen && <Modal largeImageURL={largeImageURL} tags={tags} />}
+    </div>
   );
 };
 

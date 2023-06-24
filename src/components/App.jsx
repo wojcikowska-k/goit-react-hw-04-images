@@ -4,7 +4,6 @@ import Loader from 'components/Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import SearchBar from './Searchbar/Searchbar';
 import Button from './Button/Button';
-import Modal from './Modal/Modal';
 
 //get all data from API
 const API_URL = 'https://pixabay.com/api/?';
@@ -64,7 +63,7 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  openModal = e => {
+  openModal = () => {
     this.setState({ isOpen: true });
   };
 
@@ -78,12 +77,13 @@ export class App extends Component {
     return (
       <div>
         <SearchBar onSubmit={this.valueFromSubmit} />
-        <ImageGallery images={images} openModal={this.openModal} />
+        <ImageGallery
+          images={images}
+          openModal={this.openModal}
+          isOpen={isOpen}
+        />
         {isLoading && <Loader />}
         <Button incrementPageNumber={this.incrementPageNumber} />
-        {isOpen && (
-          <Modal largeImageURL={images.largeImageURL} tags={images.tags} />
-        )}
       </div>
     );
   }

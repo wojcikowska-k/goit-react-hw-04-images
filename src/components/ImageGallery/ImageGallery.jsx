@@ -1,18 +1,19 @@
 import ImageGalleryItem from 'components/ImageGalleryItem/ImageGalleryItem';
 
 //creating gallery out of results, using component of one item
-const ImageGallery = ({ images, openModal }) => {
+const ImageGallery = ({ images, openModal, isOpen }) => {
   return (
     <ul className="ImageGallery">
       {images.map(image => {
-        const { id, largeImageURL, webformatURL, tags } = image;
+        const { id, webformatURL, tags, largeImageURL } = image;
         return (
           <ImageGalleryItem
             key={id}
-            largeImageURL={largeImageURL}
             webformatURL={webformatURL}
+            largeImageURL={largeImageURL}
             tags={tags}
             openModal={openModal}
+            isOpen={isOpen}
           />
         );
       })}
