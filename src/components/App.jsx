@@ -4,6 +4,7 @@ import Loader from 'components/Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import SearchBar from './Searchbar/Searchbar';
 import Button from './Button/Button';
+import Modal from './Modal/Modal';
 
 //get all data from API
 const API_URL = 'https://pixabay.com/api/?';
@@ -32,6 +33,7 @@ export class App extends Component {
     searchValue: '',
     page: 1,
     isOpen: false,
+    bigImageURL: '',
   };
 
   //putting starting values from submit
@@ -63,12 +65,12 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  openModal = () => {
-    this.setState({ isOpen: true });
+  openModal = largeImageURL => {
+    this.setState({ isOpen: true, bigImageURL: largeImageURL });
   };
 
   render() {
-    const { images, error, isLoading, isOpen } = this.state;
+    const { images, error, isLoading, isOpen, bigImageURL } = this.state;
 
     if (error) {
       return <div>Error - something went wrong</div>;
@@ -84,6 +86,7 @@ export class App extends Component {
         />
         {isLoading && <Loader />}
         <Button incrementPageNumber={this.incrementPageNumber} />
+        {isOpen && <Modal bigImageURL={bigImageURL} />}
       </div>
     );
   }
