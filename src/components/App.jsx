@@ -3,12 +3,13 @@ import { Component } from 'react';
 import { Loader } from 'components/Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import SearchBar from './Searchbar/Searchbar';
+import Button from './Button/Button';
 
 //get all data from API
 const API_URL = 'https://pixabay.com/api/?';
 const API_KEY = '35750210-01538b5c80567ccad47fd3a82';
 
-const fetchImagesWithQuery = async searchValue => {
+const fetchImagesWithQuery = async (searchValue, page) => {
   const respone = await axios.get(API_URL, {
     params: {
       key: API_KEY,
@@ -16,14 +17,12 @@ const fetchImagesWithQuery = async searchValue => {
       image_type: 'photo',
       orientation: 'horizontal',
       safesearch: true,
-      page: 1,
+      page: page,
       per_page: 12,
     },
   });
   return respone.data.hits;
 };
-
-// let page = 1;
 
 export class App extends Component {
   state = {
@@ -31,27 +30,28 @@ export class App extends Component {
     isLoading: false,
     error: null,
     searchValue: '',
+    page: 1,
   };
 
-  //checking if any data has changed
-  // shouldComponentUpdate(nextProps) {
-  //   if (nextProps.searchValue !== this.props.searchValue) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+  //putting starting values from submit
+  valueFromSubmit = e => {
+    this.setState({ searchValue: e, page: 1, images: [] });
+  };
 
   //putting new results into state
   async componentDidUpdate(prevProps, prevState) {
-    const { searchValue } = this.state;
+    const { searchValue, page } = this.state;
 
-    if (searchValue === prevState.searchValue) return;
+    if (searchValue === prevState.searchValue && page === prevState.page)
+      return;
 
     try {
       this.setState({ isLoading: true });
-      const images = await fetchImagesWithQuery(searchValue);
-      this.setState({ images });
+      const images = await fetchImagesWithQuery(searchValue, page);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...images],
+      }));
+      // console.log(this.state);
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -59,9 +59,8 @@ export class App extends Component {
     }
   }
 
-  valueFromSubmit = e => {
-    this.setState({ searchValue: e });
-    // console.log('event from submit:', e);
+  incrementPageNumber = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
@@ -71,13 +70,12 @@ export class App extends Component {
       return <div>Error - something went wrong</div>;
     }
 
-    if (isLoading) {
-      return <Loader />;
-    }
     return (
       <div>
         <SearchBar onSubmit={this.valueFromSubmit} />
         <ImageGallery images={images} />
+        {isLoading && <Loader />}
+        <Button incrementPageNumber={this.incrementPageNumber} />
       </div>
     );
   }

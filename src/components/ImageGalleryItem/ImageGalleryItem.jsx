@@ -1,5 +1,4 @@
 const ImageGalleryItem = props => {
-  //   console.log('props: ', props);
   const { id, largeImageURL, webformatURL, tags } = props;
   return (
     <li className="ImageGalleryItem" key={id}>

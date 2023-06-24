@@ -90,7 +90,7 @@ img {
   opacity: 1;
 }
 
-.SearchForm-button-label {
+/* .SearchForm-button-label {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -100,7 +100,7 @@ img {
   white-space: nowrap;
   clip-path: inset(50%);
   border: 0;
-}
+} */
 
 .SearchForm-input {
   display: inline-block;
@@ -126,7 +126,7 @@ img {
   max-width: calc(100vw - 48px);
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   grid-gap: 16px;
-  margin-top: 0;
+  margin-top: 10px;
   margin-bottom: 0;
   padding: 0;
   list-style: none;
@@ -180,6 +180,16 @@ img {
 /*
 * Стили компонента Buton (Load more)
 */
+.buttonContainer {
+  text-align: center;
+  margin-top: 10px;
+}
+.loaderContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
 .Button {
   padding: 8px 16px;
   border-radius: 2px;
