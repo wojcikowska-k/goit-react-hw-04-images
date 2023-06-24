@@ -34,6 +34,7 @@ export class App extends Component {
     page: 1,
     isOpen: false,
     bigImageURL: '',
+    alt: '',
   };
 
   //putting starting values from submit
@@ -65,12 +66,14 @@ export class App extends Component {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
-  openModal = largeImageURL => {
-    this.setState({ isOpen: true, bigImageURL: largeImageURL });
+  openModal = (largeImageURL, tags) => {
+    this.setState({ isOpen: true, bigImageURL: largeImageURL, alt: tags });
   };
 
+  closeModal = () => this.setState({ isOpen: false });
+
   render() {
-    const { images, error, isLoading, isOpen, bigImageURL } = this.state;
+    const { images, error, isLoading, isOpen, bigImageURL, alt } = this.state;
 
     if (error) {
       return <div>Error - something went wrong</div>;
@@ -86,7 +89,13 @@ export class App extends Component {
         />
         {isLoading && <Loader />}
         <Button incrementPageNumber={this.incrementPageNumber} />
-        {isOpen && <Modal bigImageURL={bigImageURL} />}
+        {isOpen && (
+          <Modal
+            bigImageURL={bigImageURL}
+            alt={alt}
+            closeModal={this.closeModal}
+          />
+        )}
       </div>
     );
   }

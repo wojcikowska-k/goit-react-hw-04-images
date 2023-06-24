@@ -1,10 +1,11 @@
-const Modal = ({ bigImageURL }) => {
-  <div class="Overlay">
-    <div class="Modal">
-      <h1 className="test">TEST</h1>
-      <img src={bigImageURL} alt="test" />
+const Modal = ({ bigImageURL, alt, closeModal }) => {
+  return (
+    <div class="Overlay" onClick={closeModal}>
+      <div class="Modal">
+        <img src={bigImageURL} alt={alt} />
+      </div>
     </div>
-  </div>;
+  );
 };
 
 export default Modal;
