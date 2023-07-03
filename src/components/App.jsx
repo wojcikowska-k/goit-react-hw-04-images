@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loader from 'components/Loader/Loader';
 import ImageGallery from './ImageGallery/ImageGallery';
 import SearchBar from './Searchbar/Searchbar';
@@ -25,78 +25,71 @@ const fetchImagesWithQuery = async (searchValue, page) => {
   return respone.data.hits;
 };
 
-export class App extends Component {
-  state = {
-    images: [],
-    isLoading: false,
-    error: null,
-    searchValue: '',
-    page: 1,
-    isOpen: false,
-    bigImageURL: '',
-    alt: '',
-  };
+export const App = () => {
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchValue, setSearchValue] = useState('');
+  const [page, setPage] = useState('1');
+  const [isOpen, setIsOpen] = useState(false);
+  const [bigImageURL, setBigImageURL] = useState('');
+  const [alt, setAlt] = useState('');
 
   //putting starting values from submit
-  valueFromSubmit = e => {
-    this.setState({ searchValue: e, page: 1, images: [] });
+  const valueFromSubmit = e => {
+    setSearchValue(e);
+    setPage(1);
+    setImages([]);
   };
 
-  //putting new results into state
-  async componentDidUpdate(prevProps, prevState) {
-    const { searchValue, page } = this.state;
+  useEffect(() => {
+    const asyncFunction = async () => {
+      if (searchValue === '') return;
+      setIsLoading(true);
+      try {
+        const images = await fetchImagesWithQuery(searchValue, page);
+        if (page === 1) {
+          setImages(images);
+        } else {
+          setImages(prev => [...prev, ...images]);
+        }
+      } catch (error) {
+        setError(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (searchValue === prevState.searchValue && page === prevState.page)
-      return;
+    asyncFunction();
+  }, [searchValue, page]);
 
-    try {
-      this.setState({ isLoading: true });
-      const images = await fetchImagesWithQuery(searchValue, page);
-      this.setState(prevState => ({
-        images: [...prevState.images, ...images],
-      }));
-    } catch (error) {
-      this.setState({ error });
-    } finally {
-      this.setState({ isLoading: false });
-    }
+  const incrementPageNumber = () => {
+    setPage(page + 1);
+  };
+
+  const openModal = (largeImageURL, tags) => {
+    setIsOpen(true);
+    setBigImageURL(largeImageURL);
+    setAlt(tags);
+  };
+
+  const closeModal = () => setIsOpen(false);
+
+  if (error) {
+    return <div>Error - something went wrong</div>;
   }
 
-  incrementPageNumber = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
-  openModal = (largeImageURL, tags) => {
-    this.setState({ isOpen: true, bigImageURL: largeImageURL, alt: tags });
-  };
-
-  closeModal = () => this.setState({ isOpen: false });
-
-  render() {
-    const { images, error, isLoading, isOpen, bigImageURL, alt } = this.state;
-
-    if (error) {
-      return <div>Error - something went wrong</div>;
-    }
-
-    return (
-      <div>
-        <SearchBar onSubmit={this.valueFromSubmit} />
-        <ImageGallery
-          images={images}
-          openModal={this.openModal}
-          isOpen={isOpen}
-        />
-        {isLoading && <Loader />}
-        <Button incrementPageNumber={this.incrementPageNumber} />
-        {isOpen && (
-          <Modal
-            bigImageURL={bigImageURL}
-            alt={alt}
-            closeModal={this.closeModal}
-          />
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <SearchBar onSubmit={valueFromSubmit} />
+      <ImageGallery images={images} openModal={openModal} isOpen={isOpen} />
+      {isLoading && <Loader />}
+      {images.length >= 12 && (
+        <Button incrementPageNumber={incrementPageNumber} />
+      )}
+      {isOpen && (
+        <Modal bigImageURL={bigImageURL} alt={alt} closeModal={closeModal} />
+      )}
+    </div>
+  );
+};
